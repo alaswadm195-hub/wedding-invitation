@@ -641,82 +641,114 @@ css
 
 
 
+
 /* Mobile */
 
-@media(max-width:768px){
+@media (max-width:768px){
+
+    html,
+    body{
+        width:100%;
+        max-width:100%;
+        overflow-x:hidden !important;
+    }
+
+    *{
+        max-width:100%;
+    }
+
+    .container{
+        padding:60px 15px;
+        overflow-x:hidden;
+    }
 
     .intro h1{
+        font-size:34px;
+    }
 
-        font-size:38px;
-
+    .ayah{
+        margin-top:80px;
     }
 
     .ayah h2{
-
-        font-size:32px;
-
+        font-size:28px;
         line-height:1.8;
-
     }
 
     .names{
-
-        margin-bottom:100px;
-
+        margin-top:50px;
+        margin-bottom:70px;
     }
 
     .names h1{
-
-        font-size:55px;
-
+        font-size:50px;
+        line-height:1.5;
     }
 
     .couple{
-
-        margin-top:220px;
-
+        margin-top:80px;
     }
 
     .couple img{
+        width:260px;
+        border-radius:30px;
+    }
 
-        width:280px;
-
+    .details{
+        gap:20px;
     }
 
     .card{
-
         width:100%;
+        padding:30px 20px;
+    }
 
+    .card h3{
+        font-size:38px;
+    }
+
+    .card p{
+        font-size:20px;
+    }
+
+    .countdown h2{
+        font-size:32px;
+    }
+
+    #timer{
+        gap:15px;
     }
 
     #timer div{
-
-        width:100px;
-
-        height:100px;
-
+        width:85px;
+        height:85px;
+        border-radius:20px;
     }
 
     #timer span{
+        font-size:28px;
+    }
 
-        font-size:35px;
-
+    #timer p{
+        font-size:14px;
     }
 
     .footer h2{
-
-        font-size:32px;
-
+        font-size:28px;
+        line-height:1.8;
     }
 
     #music-btn{
-
-        width:65px;
-
-        height:65px;
-
-        font-size:24px;
-
+        width:60px;
+        height:60px;
+        font-size:22px;
+        left:20px;
+        bottom:20px;
     }
 
+    .flowers,
+    .hearts,
+    .stars{
+        overflow:hidden;
+    }
 }
