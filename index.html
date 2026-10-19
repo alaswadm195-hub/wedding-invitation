@@ -12,14 +12,18 @@
 <body class="curtain-active">
 
     <!-- Red velvet curtain opening -->
-    <div class="loader" id="curtain-loader" aria-hidden="true">
+    <div class="loader" id="curtain-loader" role="dialog" aria-modal="true" aria-labelledby="curtain-title" aria-describedby="curtain-hint">
         <div class="curtain-panel curtain-panel--left"></div>
         <div class="curtain-panel curtain-panel--right"></div>
         <div class="curtain-center">
             <div class="curtain-symbol">♥</div>
             <p class="curtain-subtitle">دعوة زفاف</p>
-            <h2>محمد <span>♥</span> هاجر</h2>
+            <h2 id="curtain-title">محمد <span>♥</span> هاجر</h2>
             <p class="curtain-message">بكل الحب والود</p>
+            <button class="curtain-open-btn" id="open-invitation-btn" type="button">
+                افتح دعوتنا ♥
+            </button>
+            <p class="curtain-music-hint" id="curtain-hint">اضغط لفتح الدعوة وتشغيل الأغنية</p>
         </div>
     </div>
 
@@ -77,7 +81,7 @@
 
     <!-- Audio playback toggle -->
     <button id="music-btn" type="button" aria-label="تشغيل الموسيقى">🎵</button>
-    <audio id="song" autoplay loop preload="auto">
+    <audio id="song" loop preload="auto">
         <source src="music/music.mp3" type="audio/mpeg">
     </audio>
 
