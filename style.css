@@ -498,7 +498,6 @@ body{
 }
 /* Flowers */
 
-css
 /* Flowers */
 
 .flowers{
@@ -751,4 +750,154 @@ css
     .stars{
         overflow:hidden;
     }
+}
+
+
+/* ==========================================
+   CINEMATIC RED VELVET CURTAIN OPENING
+   Keeps the original wedding page styling.
+========================================== */
+
+body.curtain-active {
+    overflow: hidden;
+}
+
+.loader {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+    z-index: 99999;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    isolation: isolate;
+    animation: none;
+}
+
+.curtain-panel {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50.3%;
+    height: 100%;
+    z-index: 1;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            rgba(0,0,0,.34) 0%,
+            rgba(255,255,255,.07) 5%,
+            rgba(130,0,20,.06) 10%,
+            rgba(0,0,0,.3) 17%,
+            rgba(255,255,255,.06) 21%,
+            rgba(0,0,0,.35) 26%
+        ),
+        linear-gradient(90deg,#490613 0%,#920e29 35%,#b51939 55%,#650a20 100%);
+    box-shadow: inset 0 0 70px rgba(0,0,0,.45), 0 0 35px rgba(0,0,0,.25);
+    transition: transform 2.2s cubic-bezier(.76,0,.24,1);
+    will-change: transform;
+}
+
+.curtain-panel--left {
+    left: 0;
+    transform-origin: left center;
+}
+
+.curtain-panel--right {
+    right: 0;
+    transform-origin: right center;
+}
+
+.curtain-panel--left::after,
+.curtain-panel--right::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background: linear-gradient(to bottom,#8d6234,#e8c88e,#b18752,#e8c88e);
+    box-shadow: 0 0 12px rgba(225,180,105,.35);
+}
+.curtain-panel--left::after { right: 0; }
+.curtain-panel--right::after { left: 0; }
+
+.curtain-center {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    text-align: center;
+    color: #fff6ec;
+    transition: opacity .35s ease, transform .5s ease;
+}
+
+.curtain-symbol {
+    width: 76px;
+    height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 25px;
+    border: 1px solid rgba(234,202,157,.85);
+    border-radius: 50%;
+    color: #ead1b0;
+    font-size: 35px;
+    box-shadow: 0 0 35px rgba(243,198,153,.14);
+}
+
+.curtain-subtitle {
+    font-family: "Cairo", sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: #f0d2b1;
+    margin: 0 0 12px;
+}
+
+.curtain-center h2 {
+    font-family: "Aref Ruqaa", serif;
+    font-size: clamp(38px,7vw,72px);
+    font-weight: 700;
+    line-height: 1.8;
+    margin: 0;
+    color: #fff4e8;
+    text-shadow: 0 4px 25px rgba(0,0,0,.45);
+}
+.curtain-center h2 span {
+    color: #efd0b3;
+    font-size: .65em;
+}
+.curtain-message {
+    font-family: "Cairo", sans-serif;
+    font-size: 14px;
+    letter-spacing: 1px;
+    color: #e8c8b5;
+    margin-top: 15px;
+}
+
+.loader.is-opening .curtain-panel--left {
+    transform: translateX(-105%) scaleX(.96);
+}
+.loader.is-opening .curtain-panel--right {
+    transform: translateX(105%) scaleX(.96);
+}
+.loader.is-opening .curtain-center {
+    opacity: 0;
+    transform: scale(.85);
+    pointer-events: none;
+}
+
+@media (max-width: 600px) {
+    .curtain-symbol { width: 62px; height: 62px; font-size: 28px; }
+    .curtain-subtitle { font-size: 14px; }
+    .curtain-center h2 { font-size: 42px; }
+    .curtain-message { font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .curtain-panel, .curtain-center { transition-duration: .01ms; }
 }
