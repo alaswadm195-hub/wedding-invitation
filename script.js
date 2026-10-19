@@ -5,20 +5,76 @@ if (typeof AOS !== "undefined") {
     AOS.init({ duration: 1500, once: true, offset: 250 });
 }
 
-// Cinematic opening: automatically part the two curtain halves.
+// The red curtain opens only after the guest presses the welcome button.
+// A click is also the user gesture browsers need to start music with sound.
 const curtainLoader = document.getElementById("curtain-loader");
-window.addEventListener("load", () => {
-    setTimeout(() => {
-        if (curtainLoader) {
-            curtainLoader.classList.add("is-opening");
+const openInvitationBtn = document.getElementById("open-invitation-btn");
+const musicBtn = document.getElementById("music-btn");
+const song = document.getElementById("song");
+let invitationOpened = false;
+
+song.volume = 0.5;
+song.loop = true;
+
+function updateMusicButton() {
+    const playing = !song.paused;
+    musicBtn.textContent = playing ? "⏸" : "🎵";
+    musicBtn.classList.toggle("rotate", playing);
+    musicBtn.setAttribute("aria-label", playing ? "إيقاف الموسيقى" : "تشغيل الموسيقى");
+}
+
+// Trigger song.play() directly inside the real click event, BEFORE
+// timers, awaiting promises or opening the curtain.
+function openInvitation() {
+    if (invitationOpened) return;
+    invitationOpened = true;
+    openInvitationBtn.disabled = true;
+    openInvitationBtn.setAttribute("aria-busy", "true");
+
+    // Browser-authorized attempt to play sound on the guest's tap.
+    const playback = song.play();
+    if (playback && typeof playback.catch === "function") {
+        playback.catch(() => {
+            console.info("Music could not start; guest can use the music button.");
+            updateMusicButton();
+        });
+    }
+
+    curtainLoader.classList.add("is-opening");
+
+    window.setTimeout(() => {
+        curtainLoader.remove();
+        document.body.classList.remove("curtain-active");
+        musicBtn.disabled = false;
+        if (typeof AOS !== "undefined") AOS.refresh();
+
+        if (typeof confetti === "function") {
+            confetti({ particleCount: 150, spread: 120, origin: { y: 0.6 } });
         }
-        setTimeout(() => {
-            if (curtainLoader) curtainLoader.remove();
-            document.body.classList.remove("curtain-active");
-            if (typeof AOS !== "undefined") AOS.refresh();
-        }, 2300);
-    }, 700);
+    }, 2300);
+}
+
+openInvitationBtn.addEventListener("click", openInvitation);
+song.addEventListener("play", updateMusicButton);
+song.addEventListener("pause", updateMusicButton);
+song.addEventListener("ended", updateMusicButton);
+
+// Music can be paused/restarted without reopening the invitation.
+musicBtn.disabled = true;
+musicBtn.addEventListener("click", () => {
+    if (song.paused) {
+        const playback = song.play();
+        if (playback && typeof playback.catch === "function") {
+            playback.catch(() => updateMusicButton());
+        }
+    } else {
+        song.pause();
+    }
 });
+updateMusicButton();
+
+// Give keyboard visitors access to the main invitation button.
+openInvitationBtn.focus({ preventScroll: true });
 
 // Countdown uses an explicit time zone, independent of guests' locations.
 const weddingDate = new Date("2026-10-24T21:00:00+03:00").getTime();
@@ -39,59 +95,6 @@ function updateCountdown() {
 }
 const countdownInterval = setInterval(updateCountdown, 1000);
 updateCountdown();
-
-// Try automatic music playback. Browsers may require a user gesture.
-const musicBtn = document.getElementById("music-btn");
-const song = document.getElementById("song");
-let manuallyPaused = false;
-song.volume = 0.5;
-song.loop = true;
-
-function updateMusicButton() {
-    const playing = !song.paused;
-    musicBtn.textContent = playing ? "⏸" : "🎵";
-    musicBtn.classList.toggle("rotate", playing);
-    musicBtn.setAttribute("aria-label", playing ? "إيقاف الموسيقى" : "تشغيل الموسيقى");
-}
-
-async function playMusic() {
-    if (manuallyPaused || !song.paused) return;
-    try {
-        await song.play();
-    } catch (error) {
-        // Autoplay with sound isn't always allowed; first interaction retries.
-        console.info("Music awaiting user interaction.");
-    }
-}
-
-function unlockMusic(event) {
-    if (event.target instanceof Element && event.target.closest("#music-btn")) return;
-    if (!manuallyPaused && song.paused) playMusic();
-}
-
-song.addEventListener("play", () => {
-    updateMusicButton();
-    document.removeEventListener("pointerdown", unlockMusic);
-    document.removeEventListener("touchstart", unlockMusic);
-    document.removeEventListener("keydown", unlockMusic);
-});
-song.addEventListener("pause", updateMusicButton);
-musicBtn.addEventListener("click", event => {
-    event.stopPropagation();
-    if (song.paused) {
-        manuallyPaused = false;
-        playMusic();
-    } else {
-        manuallyPaused = true;
-        song.pause();
-    }
-});
-document.addEventListener("pointerdown", unlockMusic);
-document.addEventListener("touchstart", unlockMusic, { passive: true });
-document.addEventListener("keydown", unlockMusic);
-playMusic();
-window.addEventListener("load", playMusic);
-updateMusicButton();
 
 // Floating flowers
 const flowers = document.querySelector(".flowers");
@@ -144,10 +147,3 @@ window.addEventListener("scroll", () => {
     const couple = document.querySelector(".couple img");
     if (couple) couple.style.transform = "translateY(" + (window.scrollY * 0.05) + "px)";
 }, { passive: true });
-
-// Celebration after the opening
-setTimeout(() => {
-    if (typeof confetti === "function") {
-        confetti({ particleCount: 150, spread: 120, origin: { y: 0.6 } });
-    }
-}, 4000);
